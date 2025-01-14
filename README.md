@@ -3,6 +3,10 @@
 Based on:
 https://github.com/Zhehui-Huang/quad-swarm-rl
 
+## Paper
+Link:
+https://arxiv.org/pdf/2109.07735
+
 ## Citation
 
 If you use this repository in your work or otherwise wish to cite it, please make reference to our following papers.
