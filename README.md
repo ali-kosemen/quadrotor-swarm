@@ -3,8 +3,7 @@
 Based on:
 https://github.com/Zhehui-Huang/quad-swarm-rl
 
-## Paper
-Link:
+Paper:
 https://arxiv.org/pdf/2109.07735
 
 ## Citation
