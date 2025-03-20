@@ -8,7 +8,7 @@ https://arxiv.org/pdf/2109.07735
 
 ## Citation
 
-If you use this repository in your work or otherwise wish to cite it, please make reference to our following papers.
+If you use this repository in your work or otherwise wish to cite it, please make reference to following papers.
 
 ### QuadSwarm: A Modular Multi-Quadrotor Simulator for Deep Reinforcement Learning with Direct Thrust Control 
 [ICRA Workshop: The Role of Robotics Simulators for Unmanned Aerial Vehicles, 2023](https://imrclab.github.io/workshop-uav-sims-icra2023/)
