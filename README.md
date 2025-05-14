@@ -17,14 +17,14 @@ The project simulates decentralized control strategies for quadrotor swarms usin
 
 ---
 
-### 🚧 Current Development Goals
+### Current Development Goals
 
 While the core implementation is based on the original study, this repository is under **active development** with the following enhancements planned:
 
-- 🧠 **Enhanced Visual Simulation**  
+- **Enhanced Visual Simulation**  
   Integration of **Three.js** for 3D visualization interface.
 
-- 🛡️ **Offensive Swarm Scenarios**  
+- **Offensive Swarm Scenarios**  
   Development of new swarm behaviors with self-defense mechanisms for more realistic tactical applications.
 
 
