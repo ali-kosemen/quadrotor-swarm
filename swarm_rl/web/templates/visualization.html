@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drone Real-time Visualization</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #000;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+        }
+
+        #container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+        }
+
+        #info {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            color: white;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 14px;
+            z-index: 100;
+        }
+
+        #status {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            color: white;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 14px;
+            z-index: 100;
+        }
+
+        .connected {
+            color: #00ff00;
+        }
+
+        .disconnected {
+            color: #ff0000;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <div id="info">
+            <div>Episode: <span id="episode">-</span></div>
+            <div>Step: <span id="step">-</span></div>
+            <div>Reward: <span id="reward">-</span></div>
+            <div>Position: <span id="position">-</span></div>
+            <div>Velocity: <span id="velocity">-</span></div>
+            <div>Goal: <span id="goal">-</span></div>
+        </div>
+
+        <div id="status">
+            <div>Connection: <span id="connection" class="disconnected">Disconnected</span></div>
+            <div>FPS: <span id="fps">-</span></div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        // Three.js setup
+        let scene, camera, renderer, drone, goal, trail;
+        let droneTrail = [];
+        const maxTrailLength = 100;
+
+        // WebSocket connection
+        let socket;
+        let lastFrameTime = 0;
+        let frameCount = 0;
+        let fpsUpdateTime = 0;
+
+        function init() {
+            // Create scene
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x87CEEB); // Sky blue
+
+            // Create camera
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.set(5, 5, 5);
+            camera.lookAt(0, 0, 0);
+
+            // Create renderer
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+            document.getElementById('container').appendChild(renderer.domElement);
+
+            // Add lights
+            const ambientLight = new THREE.AmbientLight(0x404040, 0.6);
+            scene.add(ambientLight);
+
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            directionalLight.position.set(10, 10, 5);
+            directionalLight.castShadow = true;
+            scene.add(directionalLight);
+
+            // Create ground
+            const groundGeometry = new THREE.PlaneGeometry(20, 20);
+            const groundMaterial = new THREE.MeshLambertMaterial({ color: 0x90EE90 });
+            const ground = new THREE.Mesh(groundGeometry, groundMaterial);
+            ground.rotation.x = -Math.PI / 2;
+            ground.receiveShadow = true;
+            scene.add(ground);
+
+            // Create drone (simple box for now)
+            const droneGeometry = new THREE.BoxGeometry(0.3, 0.1, 0.3);
+            const droneMaterial = new THREE.MeshLambertMaterial({ color: 0xff0000 });
+            drone = new THREE.Mesh(droneGeometry, droneMaterial);
+            drone.castShadow = true;
+            scene.add(drone);
+
+            // Create goal marker
+            const goalGeometry = new THREE.SphereGeometry(0.2, 16, 16);
+            const goalMaterial = new THREE.MeshLambertMaterial({
+                color: 0x00ff00,
+                transparent: true,
+                opacity: 0.7
+            });
+            goal = new THREE.Mesh(goalGeometry, goalMaterial);
+            scene.add(goal);
+
+            // Create trail
+            const trailGeometry = new THREE.BufferGeometry();
+            const trailMaterial = new THREE.LineBasicMaterial({
+                color: 0xff0000,
+                transparent: true,
+                opacity: 0.6
+            });
+            trail = new THREE.Line(trailGeometry, trailMaterial);
+            scene.add(trail);
+
+            // Add coordinate axes
+            const axesHelper = new THREE.AxesHelper(2);
+            scene.add(axesHelper);
+
+            // Handle window resize
+            window.addEventListener('resize', onWindowResize, false);
+
+            // Connect to WebSocket
+            connectWebSocket();
+
+            // Start render loop
+            animate();
+        }
+
+        function connectWebSocket() {
+            const wsUrl = 'ws://localhost:8765';
+            socket = new WebSocket(wsUrl);
+
+            socket.onopen = function(event) {
+                console.log('Connected to WebSocket server');
+                document.getElementById('connection').textContent = 'Connected';
+                document.getElementById('connection').className = 'connected';
+            };
+
+            socket.onmessage = function(event) {
+                const data = JSON.parse(event.data);
+                updateVisualization(data);
+            };
+
+            socket.onclose = function(event) {
+                console.log('Disconnected from WebSocket server');
+                document.getElementById('connection').textContent = 'Disconnected';
+                document.getElementById('connection').className = 'disconnected';
+
+                // Try to reconnect after 2 seconds
+                setTimeout(connectWebSocket, 2000);
+            };
+
+            socket.onerror = function(error) {
+                console.error('WebSocket error:', error);
+            };
+        }
+
+        function updateVisualization(data) {
+            if (data.type === 'drone_state') {
+                const droneState = data.drone_state;
+
+                // Debug: Log the received data
+                console.log('Received drone data:', {
+                    position: droneState.position,
+                    goal: droneState.goal,
+                    step: data.step,
+                    episode: data.episode
+                });
+
+                // Update drone position (scale for better visibility)
+                const scale = 0.5; // Reduced scale factor for smoother movement
+                drone.position.set(
+                    droneState.position.x * scale,
+                    droneState.position.z * scale, // Z is up in our coordinate system
+                    -droneState.position.y * scale // Flip Y axis
+                );
+
+                // Update goal position
+                goal.position.set(
+                    droneState.goal.x * scale,
+                    droneState.goal.z * scale,
+                    -droneState.goal.y * scale
+                );
+
+                // Add to trail
+                droneTrail.push(drone.position.clone());
+                if (droneTrail.length > maxTrailLength) {
+                    droneTrail.shift();
+                }
+
+                // Update trail geometry
+                const positions = new Float32Array(droneTrail.length * 3);
+                for (let i = 0; i < droneTrail.length; i++) {
+                    positions[i * 3] = droneTrail[i].x;
+                    positions[i * 3 + 1] = droneTrail[i].y;
+                    positions[i * 3 + 2] = droneTrail[i].z;
+                }
+                trail.geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+
+                // Update camera to follow drone
+                const offset = new THREE.Vector3(5, 5, 5);
+                camera.position.copy(drone.position).add(offset);
+                camera.lookAt(drone.position);
+
+                // Update UI
+                document.getElementById('episode').textContent = data.episode;
+                document.getElementById('step').textContent = data.step;
+                document.getElementById('reward').textContent = data.reward.toFixed(3);
+                document.getElementById('position').textContent =
+                    `(${droneState.position.x.toFixed(2)}, ${droneState.position.y.toFixed(2)}, ${droneState.position.z.toFixed(2)})`;
+                document.getElementById('velocity').textContent =
+                    `(${droneState.velocity.vx.toFixed(2)}, ${droneState.velocity.vy.toFixed(2)}, ${droneState.velocity.vz.toFixed(2)})`;
+                document.getElementById('goal').textContent =
+                    `(${droneState.goal.x.toFixed(2)}, ${droneState.goal.y.toFixed(2)}, ${droneState.goal.z.toFixed(2)})`;
+            }
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // Calculate FPS
+            const currentTime = performance.now();
+            frameCount++;
+            if (currentTime - fpsUpdateTime > 1000) {
+                const fps = Math.round(frameCount * 1000 / (currentTime - fpsUpdateTime));
+                document.getElementById('fps').textContent = fps;
+                frameCount = 0;
+                fpsUpdateTime = currentTime;
+            }
+
+            renderer.render(scene, camera);
+        }
+
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        // Initialize when page loads
+        window.addEventListener('load', init);
+    </script>
+</body>
+</html>
