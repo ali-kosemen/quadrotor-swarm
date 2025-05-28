@@ -6,25 +6,15 @@ https://github.com/Zhehui-Huang/quad-swarm-rl
 Paper:
 https://arxiv.org/pdf/2109.07735
 
-## 📦 Includes
 
-This repository is a working clone of the original research implementation from the paper:
+### Development
 
-**"Decentralized Control of Quadrotor Swarms with End-to-end Deep Reinforcement Learning"**  
-by *Zhehui Huang et al.*
-
-The project simulates decentralized control strategies for quadrotor swarms using deep reinforcement learning techniques.
-
----
-
-### Current Development Goals
-
-While the core implementation is based on the original study, this repository is under **active development** with the following enhancements planned:
+While the core implementation is based on the original study, this repository is under development with the following enhancements planned:
 
 - **Enhanced Visual Simulation**  
   Integration of **Three.js** for 3D visualization interface.
 
-- **Offensive Swarm Scenarios**  
+- **Offensive Swarm Scenario**  
   Development of new swarm behaviors with self-defense mechanisms for more realistic tactical applications.
 
 
