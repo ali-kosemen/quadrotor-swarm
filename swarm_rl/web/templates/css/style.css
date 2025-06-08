@@ -1,0 +1,309 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Arial', sans-serif;
+    background: linear-gradient(135deg, #000011 0%, #001122 50%, #002244 100%);
+    color: #ffffff;
+    overflow: hidden;
+}
+
+#container {
+    display: flex;
+    height: 100vh;
+}
+
+#info-panel {
+    width: 300px;
+    background: rgba(0, 0, 17, 0.95);
+    padding: 20px;
+    border-right: 2px solid #223344;
+    overflow-y: auto;
+    box-shadow: 2px 0 15px rgba(0, 17, 34, 0.8);
+    backdrop-filter: blur(10px);
+}
+
+#info-panel h2 {
+    color: #87CEEB;
+    margin-bottom: 20px;
+    font-size: 18px;
+    text-align: center;
+    text-shadow: 0 0 10px rgba(135, 206, 235, 0.5);
+}
+
+#info-panel h3 {
+    color: #81C784;
+    margin: 15px 0 10px 0;
+    font-size: 14px;
+}
+
+#connection-status {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    padding: 10px;
+    background: rgba(0, 17, 34, 0.8);
+    border-radius: 8px;
+    border: 1px solid #223344;
+}
+
+#status-indicator {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.connected {
+    background: #4CAF50;
+    box-shadow: 0 0 10px #4CAF50;
+}
+
+.disconnected {
+    background: #f44336;
+    box-shadow: 0 0 10px #f44336;
+}
+
+.connecting {
+    background: #ff9800;
+    box-shadow: 0 0 10px #ff9800;
+    animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+
+#stats {
+    background: rgba(0, 17, 34, 0.8);
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    border: 1px solid #223344;
+}
+
+#stats div {
+    margin: 5px 0;
+    font-size: 14px;
+}
+
+#controls {
+    margin-bottom: 20px;
+}
+
+#controls button {
+    width: 100%;
+    padding: 10px;
+    margin: 5px 0;
+    background: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background 0.3s;
+}
+
+#controls button:hover {
+    background: #45a049;
+}
+
+#controls button:disabled {
+    background: #666;
+    cursor: not-allowed;
+}
+
+/* Camera controls styling */
+#camera-controls {
+    margin-bottom: 20px;
+    background: #333;
+    padding: 15px;
+    border-radius: 5px;
+}
+
+#camera-buttons {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+#camera-buttons button {
+    flex: 1;
+    padding: 8px;
+    background: #555;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 12px;
+    transition: background 0.3s;
+}
+
+#camera-buttons button:hover {
+    background: #666;
+}
+
+#current-camera-view {
+    font-weight: bold;
+    color: #4CAF50;
+    text-align: center;
+    min-width: 80px;
+    font-size: 12px;
+}
+
+#camera-view-buttons {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 5px;
+    margin-bottom: 10px;
+}
+
+.camera-view-btn {
+    padding: 8px;
+    background: #555;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 11px;
+    transition: all 0.3s;
+}
+
+.camera-view-btn:hover {
+    background: #666;
+}
+
+.camera-view-btn.active {
+    background: #4CAF50;
+    box-shadow: 0 0 5px #4CAF50;
+}
+
+#follow-drone-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid #555;
+}
+
+#follow-drone-controls button {
+    flex: 1;
+    padding: 6px;
+    background: #555;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 11px;
+    transition: background 0.3s;
+}
+
+#follow-drone-controls button:hover {
+    background: #666;
+}
+
+#follow-drone-id {
+    font-weight: bold;
+    color: #81C784;
+    text-align: center;
+    min-width: 60px;
+    font-size: 11px;
+}
+
+/* Camera action buttons */
+#camera-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-top: 10px;
+}
+
+#camera-actions button {
+    padding: 8px;
+    background: #2196F3;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 11px;
+    transition: all 0.3s;
+}
+
+#camera-actions button:hover {
+    background: #1976D2;
+}
+
+#camera-actions button:active {
+    transform: scale(0.98);
+}
+
+/* Camera info text */
+#camera-info {
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid #555;
+}
+
+#camera-info small {
+    display: block;
+    color: #aaa;
+    font-size: 10px;
+    margin: 2px 0;
+    text-align: center;
+}
+
+
+
+#canvas-container {
+    flex: 1;
+    position: relative;
+}
+
+#three-canvas {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: #333;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #666;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #888;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    #container {
+        flex-direction: column;
+    }
+    
+    #info-panel {
+        width: 100%;
+        height: 200px;
+        border-right: none;
+        border-bottom: 2px solid #444;
+    }
+    
+    #canvas-container {
+        height: calc(100vh - 200px);
+    }
+}
