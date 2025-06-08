@@ -1,0 +1,1 @@
+python -m sample_factory.launcher.run --run=swarm_rl.runs.multi_quad.multi_quad --max_parallel=1 --pause_between=1 --experiments_per_gpu=1 --num_gpus=1
