@@ -177,9 +177,35 @@ class WebSocketDataWrapper(gym.Wrapper):
         self.current_step = 0
         self.episode_reward = 0.0
 
-        # For throttling data transmission
+        # For throttling data transmission and timing control
         self.last_send_time = time.time()
-        self.send_interval = 0.04  # Send every 500ms (2 FPS)
+        self.send_interval = 0.0  # No throttling - send every frame like pyglet
+
+        # Timing control like pyglet rendering
+        self.simulation_start_time = 0
+        # Try to get control_freq from environment hierarchy
+        self.control_freq = self._get_control_freq(env)
+        self.render_speed = 1.0  # Same as pyglet default
+        log.info(f"WebSocketDataWrapper: Using control_freq={self.control_freq}Hz, render_speed={self.render_speed}")
+
+    def _get_control_freq(self, env):
+        """Get control frequency from environment hierarchy"""
+        # Try different ways to get control_freq
+        if hasattr(env, 'control_freq'):
+            return env.control_freq
+        elif hasattr(env, 'envs') and len(env.envs) > 0 and hasattr(env.envs[0], 'control_freq'):
+            return env.envs[0].control_freq
+        else:
+            # Traverse wrapped environments
+            current_env = env
+            while hasattr(current_env, 'env'):
+                current_env = current_env.env
+                if hasattr(current_env, 'control_freq'):
+                    return current_env.control_freq
+                elif hasattr(current_env, 'envs') and len(current_env.envs) > 0 and hasattr(current_env.envs[0], 'control_freq'):
+                    return current_env.envs[0].control_freq
+            # Default fallback
+            return 50  # Default 50Hz like quadrotor
 
     def reset(self, **kwargs):
         # Start new episode
@@ -191,6 +217,9 @@ class WebSocketDataWrapper(gym.Wrapper):
         return obs
 
     def step(self, action):
+        # Timing control like pyglet rendering - start timing
+        step_start_time = time.time()
+
         # Handle both old (4 values) and new (5 values) gymnasium formats
         step_result = self.env.step(action)
 
@@ -202,60 +231,109 @@ class WebSocketDataWrapper(gym.Wrapper):
         else:
             # New format: obs, reward, terminated, truncated, info
             obs, reward, terminated, truncated, info = step_result
+
+        # Handle array values for multi-agent environments
+        if hasattr(terminated, '__len__') and not isinstance(terminated, str):
+            # If terminated is an array, check if any agent is terminated
+            done = np.any(terminated) or np.any(truncated) if hasattr(truncated, '__len__') else np.any(terminated)
+        else:
+            # Single agent case
             done = terminated or truncated
 
         # Debug: Print step info
         if self.current_step % 50 == 0:
             log.info(f"WebSocketDataWrapper.step() called - Step {self.current_step}: action={action}, reward={reward}")
 
-        # Extract drone state
-        drone_state = extract_drone_state(obs, self.env)
-
-        if drone_state is None:
-            log.warning(f"Failed to extract drone state at step {self.current_step}")
-            return obs, reward, terminated, truncated, info
-
-        # Prepare data for visualization
+        # Extract drone states for all agents
         current_time = time.time()
 
         # Throttle data transmission
         if current_time - self.last_send_time > self.send_interval:
-            viz_data = {
-                'type': 'drone_state',
-                'episode': self.current_episode,
-                'step': self.current_step,
-                'timestamp': current_time,
-                'drone_state': drone_state,
-                'action': action.tolist() if isinstance(action, np.ndarray) else action,
-                'reward': float(reward) if np.isscalar(reward) else float(reward[0]),
-                'done': done
-            }
+            # Get number of agents
+            num_agents = getattr(self.env, 'num_agents', 1)
+            if hasattr(self.env, 'envs'):
+                num_agents = len(self.env.envs)
 
-            # Debug: Print data being sent
-            if self.current_step % 20 == 0:  # Print every 20 steps
-                log.info(f"Sending data: episode={viz_data['episode']}, step={viz_data['step']}, "
-                        f"pos=({drone_state['position']['x']:.2f}, {drone_state['position']['y']:.2f}, {drone_state['position']['z']:.2f})")
+            # Extract state for each drone
+            all_drone_states = []
+            for agent_idx in range(num_agents):
+                drone_state = extract_drone_state(obs, self.env, agent_idx)
+                if drone_state is not None:
+                    all_drone_states.append(drone_state)
 
-            # Send to WebSocket clients
-            self.websocket_server.broadcast(viz_data)
+            if not all_drone_states:
+                log.warning(f"Failed to extract any drone states at step {self.current_step}")
+                return obs, reward, terminated, truncated, info
+
+            # Send data for each drone separately
+            for drone_state in all_drone_states:
+                # Convert numpy types to Python types for JSON serialization
+                action_data = action.tolist() if isinstance(action, np.ndarray) else action
+                if isinstance(action_data, list):
+                    action_data = [float(x) if hasattr(x, 'dtype') else x for x in action_data]
+
+                reward_data = float(reward) if np.isscalar(reward) else float(reward[0])
+                done_data = bool(done) if hasattr(done, 'dtype') else done
+
+                viz_data = {
+                    'type': 'drone_state',
+                    'episode': int(self.current_episode),
+                    'step': int(self.current_step),
+                    'timestamp': float(current_time),
+                    'drone_state': drone_state,
+                    'action': action_data,
+                    'reward': reward_data,
+                    'done': done_data,
+                    'num_agents': int(num_agents)
+                }
+
+                # Send to WebSocket clients
+                self.websocket_server.broadcast(viz_data)
+
+            # Debug: Print data being sent (only for first drone to avoid spam)
+            if self.current_step % 50 == 0 and all_drone_states:  # Print every 50 steps
+                first_drone = all_drone_states[0]
+                log.info(f"Sending data: episode={self.current_episode}, step={self.current_step}, "
+                        f"num_drones={len(all_drone_states)}, "
+                        f"drone_0_pos=({first_drone['position']['x']:.2f}, {first_drone['position']['y']:.2f}, {first_drone['position']['z']:.2f}), "
+                        f"drone_0_goal=({first_drone['goal']['x']:.2f}, {first_drone['goal']['y']:.2f}, {first_drone['goal']['z']:.2f}), "
+                        f"send_interval={self.send_interval:.3f}s")
+
             self.last_send_time = current_time
 
         self.current_step += 1
         self.episode_reward += float(reward) if np.isscalar(reward) else float(reward[0])
+
+        # Timing control like pyglet rendering - add sleep to maintain realtime speed
+        if self.simulation_start_time > 0:
+            simulation_time = current_time - self.simulation_start_time
+        else:
+            simulation_time = 0
+
+        step_processing_time = time.time() - step_start_time
+        realtime_control_period = 1 / self.control_freq
+        desired_time_between_steps = realtime_control_period / self.render_speed
+        time_to_sleep = desired_time_between_steps - simulation_time - step_processing_time
+
+        # Wait so we don't simulate faster than realtime (like pyglet does)
+        if time_to_sleep > 0:
+            time.sleep(time_to_sleep)
+
+        # Update simulation start time for next step
+        self.simulation_start_time = time.time()
 
         # Check if episode should end
         if done:
             log.info(f"Episode {self.current_episode + 1} completed: {self.current_step} steps, reward: {self.episode_reward:.3f}")
             self.current_episode += 1
 
-        # Ensure terminated and truncated are numpy arrays if needed
-        if np.isscalar(terminated):
-            terminated = np.array([terminated])
-        if np.isscalar(truncated):
-            truncated = np.array([truncated])
-
-        # Return in new gymnasium format
-        return obs, reward, terminated, truncated, info
+        # Return in the same format as received
+        if len(step_result) == 4:
+            # Return old format
+            return obs, reward, done, info
+        else:
+            # Return new format - keep original terminated/truncated values
+            return obs, reward, terminated, truncated, info
 
     def close(self):
         self.env.close()
