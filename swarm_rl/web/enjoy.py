@@ -369,6 +369,16 @@ def enjoy_with_websocket_visualization(cfg):
         # Import the original quadrotor environment creation
         from swarm_rl.env_wrappers.quad_utils import make_quadrotor_env_multi
 
+        # Force the config values again right before environment creation
+        # Sample Factory might have overridden our settings from saved config
+        cfg.visualize_v_value = True
+        cfg.load_checkpoint_kind = "best"
+        cfg.policy_index = 0
+
+        # Debug: Print checkpoint configuration before creating environment
+        log.info(f"Environment creation - visualize_v_value: {getattr(cfg, 'visualize_v_value', 'NOT SET')}")
+        log.info(f"Environment creation - load_checkpoint_kind: {getattr(cfg, 'load_checkpoint_kind', 'NOT SET')}")
+
         # Create the base environment
         env = make_quadrotor_env_multi(cfg)
         log.info(f"Base environment created: {type(env)}")
