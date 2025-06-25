@@ -90,8 +90,8 @@ def add_quadrotors_env_args(env, parser):
     # Scenarios
     p.add_argument('--quads_mode', default='static_same_goal', type=str,
                    choices=['static_same_goal', 'static_diff_goal', 'dynamic_same_goal', 'dynamic_diff_goal',
-                            'ep_lissajous3D', 'ep_rand_bezier', 'swarm_vs_swarm', 'swap_goals', 'dynamic_formations',
-                            'mix', 'o_uniform_same_goal_spawn', 'o_random',
+                            'ep_lissajous3D', 'ep_rand_bezier', 'ep_figure8_lemniscate', 'swarm_vs_swarm', 
+                            'swap_goals', 'dynamic_formations', 'mix', 'o_uniform_same_goal_spawn', 'o_random',
                             'o_dynamic_diff_goal', 'o_dynamic_same_goal', 'o_diagonal', 'o_static_same_goal',
                             'o_static_diff_goal', 'o_swap_goals', 'o_ep_rand_bezier'],
                    help='Choose which scenario to run. ep = evader pursuit')
