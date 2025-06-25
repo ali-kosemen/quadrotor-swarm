@@ -11,6 +11,7 @@ from gym_art.quadrotor_multi.scenarios.dynamic_formations import Scenario_dynami
 from gym_art.quadrotor_multi.scenarios.dynamic_same_goal import Scenario_dynamic_same_goal
 from gym_art.quadrotor_multi.scenarios.ep_lissajous3D import Scenario_ep_lissajous3D
 from gym_art.quadrotor_multi.scenarios.ep_rand_bezier import Scenario_ep_rand_bezier
+from gym_art.quadrotor_multi.scenarios.ep_figure8_lemniscate import Scenario_ep_figure8_lemniscate
 from gym_art.quadrotor_multi.scenarios.run_away import Scenario_run_away
 from gym_art.quadrotor_multi.scenarios.static_diff_goal import Scenario_static_diff_goal
 from gym_art.quadrotor_multi.scenarios.static_same_goal import Scenario_static_same_goal
