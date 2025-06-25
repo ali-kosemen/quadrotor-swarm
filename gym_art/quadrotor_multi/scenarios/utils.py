@@ -5,12 +5,12 @@ from numpy import cos, sin
 from numba import njit
 
 QUADS_MODE_LIST = ['static_same_goal', 'static_diff_goal',  # static formations
-                   'ep_lissajous3D', 'ep_rand_bezier',  # evader pursuit
+                   'ep_lissajous3D', 'ep_rand_bezier', 'ep_figure8_lemniscate',  # evader pursuit
                    'dynamic_same_goal', 'dynamic_diff_goal', 'dynamic_formations', 'swap_goals',  # dynamic formations
                    'swarm_vs_swarm']  # only support >=2 drones
 
 QUADS_MODE_LIST_SINGLE = ['static_same_goal', 'static_diff_goal',  # static formations
-                          'ep_lissajous3D', 'ep_rand_bezier',  # evader pursuit
+                          'ep_lissajous3D', 'ep_rand_bezier', 'ep_figure8_lemniscate',  # evader pursuit
                           'dynamic_same_goal',  # dynamic formations
                           ]
 
@@ -35,6 +35,7 @@ QUADS_PARAMS_DICT = {
     'dynamic_same_goal': [['circle_horizontal'], [0.0, 0.0]],
     'ep_lissajous3D': [['circle_horizontal'], [0.0, 0.0]],
     'ep_rand_bezier': [['circle_horizontal'], [0.0, 0.0]],
+    'ep_figure8_lemniscate': [['circle_horizontal'], [0.0, 0.0]],  # New scenario
     'static_diff_goal': [QUADS_FORMATION_LIST, [5 * quad_arm_size, 10 * quad_arm_size]],
     'dynamic_diff_goal': [QUADS_FORMATION_LIST, [5 * quad_arm_size, 10 * quad_arm_size]],
     'swarm_vs_swarm': [QUADS_FORMATION_LIST, [5 * quad_arm_size, 10 * quad_arm_size]],
