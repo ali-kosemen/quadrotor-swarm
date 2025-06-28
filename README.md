@@ -56,6 +56,7 @@ For train single drone:
 ```
 
 In ***quadrotor_swarm/swarm_rl/runs/single_quad/baseline.py***, you can change some parameters 
+
 (--quads_mode for scenario choice etc.)
 
 For train multi drone (default 8 drones):
