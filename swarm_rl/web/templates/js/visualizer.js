@@ -550,17 +550,17 @@ class DroneVisualizer {
         }
     }
 
-    createGoalGeometry() {
+    createGoalGeometry(color = 0x00ff00) {
         // Enhanced goal with glow effect
         const group = new THREE.Group();
 
         // Main goal sphere
         const geometry = new THREE.SphereGeometry(0.025, 16, 16);
         const material = new THREE.MeshPhongMaterial({
-            color: 0x00ff00,
+            color: color,
             transparent: true,
             opacity: 0.7,
-            emissive: 0x004400,
+            emissive: color,
             emissiveIntensity: 0.3,
             shininess: 100
         });
@@ -571,7 +571,7 @@ class DroneVisualizer {
         // Outer glow sphere
         const glowGeometry = new THREE.SphereGeometry(0.035, 12, 12);
         const glowMaterial = new THREE.MeshBasicMaterial({
-            color: 0x00ff00,
+            color: color,
             transparent: true,
             opacity: 0.2,
             side: THREE.BackSide
@@ -615,7 +615,7 @@ class DroneVisualizer {
 
             // Create goal marker
             if (this.showGoals) {
-                const goalMesh = this.createGoalGeometry();
+                const goalMesh = this.createGoalGeometry(color);  // Pass drone color to goal
                 this.scene.add(goalMesh);
                 this.goals.set(droneId, goalMesh);
             }
