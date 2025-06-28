@@ -55,14 +55,14 @@ For train single drone:
 ./train_single.sh
 ```
 
-In ***quadrotor_swarm/swarm_rl/runs/single_quad/baseline.py***, you can change some parameters like (--quads mode for scenario choice etc.)
+In ***quadrotor_swarm/swarm_rl/runs/single_quad/baseline.py***, you can change some parameters like (--quads_mode for scenario choice etc.)
 
 For train multi drone (default 8 drones):
 ```bash
 ./train_multi.sh
 ```
 
-In ***quadrotor_swarm/swarm_rl/runs/multi_quad/baseline.py***, you can change some parameters like (--quads mode for scenario choice etc.)
+In ***quadrotor_swarm/swarm_rl/runs/multi_quad/baseline.py***, you can change some parameters like (--quads_mode for scenario choice etc.)
 
 
 To monitor the experiments:
