@@ -7,10 +7,107 @@ Paper:
 https://arxiv.org/pdf/2109.07735
 
 
-### Development
+## Why This Version
 
-- **Enhanced Visual Simulation**  
-  Integration of **Three.js** for 3D visualization interface.
+In the original repository, I encountered persistent issues running the built-in visualization on my machine (Ubuntu 24.04). Although the author confirmed it works on their own 24.04 setup, the problem seemed to be specific to my environment. To help others who might face similar compatibility issues, I decided to implement a custom 3D visualization using Three.js. While enhancing the simulation, I also introduced a new evader-pursuit scenario to enrich the swarm behavior dynamics.
+
+
+## New Features
+
+- **Enhanced Visualization**  
+  Integration of **Three.js** for 3D visualization interface
+
+- **Added New Scenario**  
+  Evader-pursuit scenario
+
+
+## Setup
+
+### Conda
+
+```bash
+conda create -n quadrotor_swarm python=3.11
+```
+
+```bash
+conda activate quadrotor_swarm
+```
+
+### Packages
+
+```bash
+git clone https://github.com/ali-kosemen/quadrotor-swarm.git
+```
+
+```bash
+cd quadrotor_swarm
+```
+
+```bash
+pip install -e .
+```
+
+
+## Train
+
+For train single drone:
+```bash
+./train_single.sh
+```
+
+In ***quadrotor_swarm/swarm_rl/runs/multi_quad/baseline.py***, you can change some parameters like (--quads mode for scenario choice etc.)
+
+For train multi drone (default 8 drones):
+```bash
+./train_multi.sh
+```
+
+In ***quadrotor_swarm/swarm_rl/runs/single_quad/baseline.py***, you can change some parameters like (--quads mode for scenario choice etc.)
+
+
+To monitor the experiments:
+
+```bash
+tensorboard --logdir=./
+```
+
+## Test (Inference Mode)
+
+First, run the HTTP server for web ui
+
+```bash
+./web_server.sh
+```
+
+After that, run websocket server to send data to web ui in real time
+
+```bash
+./web_inference.sh APPO quadrotor_multi_websocket <train_dir> <experiment_name>
+```
+
+<experiment_name> and <train_dir> are set in the config.json file of your trained model
+
+Then, go to the http server url
+
+```bash
+http://localhost:8083
+```
+
+## Pre-trained Models
+
+I have trained models for some scenarios
+
+[Dynamic Same Goal (8 Quadrotors)](https://drive.google.com/uc?export=download&id=1a2B3cD4EfGhIjKlm)
+
+[Evader-Pursuit Lissajous (8 Quadrotors)](https://drive.google.com/uc?export=download&id=1a2B3cD4EfGhIjKlm)
+
+[Evader-Pursuit Bernoulli Lemniscate (8 Quadrotors)](https://drive.google.com/uc?export=download&id=1a2B3cD4EfGhIjKlm)
+
+[Swarm vs Swarm (8 Quadrotors)](https://drive.google.com/uc?export=download&id=1a2B3cD4EfGhIjKlm)
+
+[Swap Goals (8 Quadrotors)](https://drive.google.com/uc?export=download&id=1a2B3cD4EfGhIjKlm)
+
+
 
 ## Citation
 
