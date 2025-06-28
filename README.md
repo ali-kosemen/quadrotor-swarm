@@ -19,6 +19,7 @@ In the original repository, I encountered persistent issues running the built-in
 
 - **Added New Scenario**  
   The classic figure-eight ∞ curve (3D version) lemniscate (Bernoulli's lemniscate)
+  
   Scenario name: ep_figure8_lemniscate (For evader-pursuit)
 
 ## Setup
