@@ -55,14 +55,14 @@ For train single drone:
 ./train_single.sh
 ```
 
-In ***quadrotor_swarm/swarm_rl/runs/multi_quad/baseline.py***, you can change some parameters like (--quads mode for scenario choice etc.)
+In ***quadrotor_swarm/swarm_rl/runs/single_quad/baseline.py***, you can change some parameters like (--quads mode for scenario choice etc.)
 
 For train multi drone (default 8 drones):
 ```bash
 ./train_multi.sh
 ```
 
-In ***quadrotor_swarm/swarm_rl/runs/single_quad/baseline.py***, you can change some parameters like (--quads mode for scenario choice etc.)
+In ***quadrotor_swarm/swarm_rl/runs/multi_quad/baseline.py***, you can change some parameters like (--quads mode for scenario choice etc.)
 
 
 To monitor the experiments:
@@ -73,13 +73,13 @@ tensorboard --logdir=./
 
 ## Test (Inference Mode)
 
-First, run the HTTP server for web ui
+First, start the HTTP server for web UI
 
 ```bash
 ./web_server.sh
 ```
 
-After that, run websocket server to send data to web ui in real time
+Secondly, launch the WebSocket server to enable real-time data transmission to the web UI
 
 ```bash
 ./web_inference.sh APPO quadrotor_multi_websocket <train_dir> <experiment_name>
@@ -87,7 +87,7 @@ After that, run websocket server to send data to web ui in real time
 
 <experiment_name> and <train_dir> are set in the config.json file of your trained model
 
-Then, go to the http server url
+Lastly, go to the HTTP server URL
 
 ```bash
 http://localhost:8083
@@ -95,18 +95,17 @@ http://localhost:8083
 
 ## Pre-trained Models
 
-I have trained models for some scenarios
+I have trained models for several scenarios
 
-[Dynamic Same Goal (8 Quadrotors)](https://drive.google.com/uc?export=download&id=1a2B3cD4EfGhIjKlm)
+- [Dynamic Same Goal (8 Quadrotors)](https://drive.google.com/uc?export=download&id=1a2B3cD4EfGhIjKlm)
 
-[Evader-Pursuit Lissajous (8 Quadrotors)](https://drive.google.com/uc?export=download&id=1a2B3cD4EfGhIjKlm)
+- [Evader-Pursuit Lissajous (8 Quadrotors)](https://drive.google.com/uc?export=download&id=1a2B3cD4EfGhIjKlm)
 
-[Evader-Pursuit Bernoulli Lemniscate (8 Quadrotors)](https://drive.google.com/uc?export=download&id=1a2B3cD4EfGhIjKlm)
+- [Evader-Pursuit Bernoulli Lemniscate (8 Quadrotors)](https://drive.google.com/uc?export=download&id=1a2B3cD4EfGhIjKlm)
 
-[Swarm vs Swarm (8 Quadrotors)](https://drive.google.com/uc?export=download&id=1a2B3cD4EfGhIjKlm)
+- [Swarm vs Swarm (8 Quadrotors)](https://drive.google.com/uc?export=download&id=1a2B3cD4EfGhIjKlm) (Not fully stable, but still capable of demonstrating reasonable behavior)
 
-[Swap Goals (8 Quadrotors)](https://drive.google.com/uc?export=download&id=1a2B3cD4EfGhIjKlm)
-
+- [Swap Goals (8 Quadrotors)](https://drive.google.com/uc?export=download&id=1a2B3cD4EfGhIjKlm) (Not fully stable, but still capable of demonstrating reasonable behavior)
 
 
 ## Citation
