@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quadrotor Swarm Visualization - Three.js</title>
+    <title>Quadrotor Swarm Three.js</title>
     <link rel="stylesheet" href="css/style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
@@ -11,7 +11,8 @@
 <body>
     <div id="container">
         <div id="info-panel">
-            <h2>Quadrotor Swarm Visualization</h2>
+            <h2 style="margin-bottom: 0; text-align: center;">Quadrotor Swarm</h2>
+            <div style="color: #666; font-size: 0.9em; margin-bottom: 15px; text-align: center;">powered by Three.js</div>
             <div id="connection-status">
                 <span id="status-indicator" class="disconnected"></span>
                 <span id="status-text">Disconnected</span>
@@ -24,21 +25,11 @@
             <div id="controls">
                 <button id="toggle-trails-btn">Toggle Trails</button>
             </div>
-            <div id="camera-controls">
-                <h3>Camera View</h3>
-                <div id="camera-view-buttons">
-                    <button class="camera-view-btn" data-view="global">Global</button>
-                </div>
-                <div id="camera-actions">
-                    <button id="reset-camera-btn">Reset Camera</button>
-                </div>
-                <div id="camera-info">
-                    <small>Mouse wheel: Zoom in/out</small>
-                    <small>Left drag: Rotate 360°</small>
-                    <small>Right drag: Pan view</small>
-                    <small>R: Reset camera</small>
-                    <small>Auto-tracks all drones & goals</small>
-                </div>
+            <div id="camera-info" style="margin-top: 20px;">
+                <div style="font-weight: bold; font-size: 14px; margin-bottom: 12px;">Camera Controls:</div>
+                <div style="margin-bottom: 5px;"><span style="font-weight: bold;">Mouse wheel:</span> Zoom in/out</div>
+                <div style="margin-bottom: 5px;"><span style="font-weight: bold;">Left click + drag:</span> Rotate 360°</div>
+                <div style="margin-bottom: 5px;"><span style="font-weight: bold;">Ctrl + Z + drag/wheel:</span> Free movement</div>
             </div>
 
         </div>
