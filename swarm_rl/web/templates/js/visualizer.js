@@ -579,6 +579,14 @@ class DroneVisualizer {
         const glow = new THREE.Mesh(glowGeometry, glowMaterial);
         group.add(glow);
 
+        // Store materials for animation
+        group.userData = {
+            mainMaterial: material,
+            glowMaterial: glowMaterial,
+            baseColor: color,
+            animationOffset: Math.random() * Math.PI * 2 // Random phase offset for each goal
+        };
+
         return group;
     }
 
@@ -878,6 +886,25 @@ class DroneVisualizer {
         if (this.skyMaterial) {
             this.skyMaterial.uniforms.time.value = Date.now() * 0.001;
         }
+
+        // Animate goals
+        const time = Date.now() * 0.001;
+        this.goals.forEach(goal => {
+            const userData = goal.userData;
+            if (userData && userData.mainMaterial && userData.glowMaterial) {
+                // Faster and more intense pulsing effect (values between 0.3 and 1.2 for main material)
+                const mainPulse = 0.3 + (Math.sin(time * 3 + userData.animationOffset) + 1) * 0.45;
+                userData.mainMaterial.emissiveIntensity = mainPulse;
+                
+                // Enhanced glow effect with wider range (values between 0.15 and 0.45)
+                const glowPulse = 0.15 + (Math.sin(time * 3 + userData.animationOffset) + 1) * 0.15;
+                userData.glowMaterial.opacity = glowPulse;
+                
+                // Additional size pulsing for enhanced effect
+                const scale = 1 + Math.sin(time * 3 + userData.animationOffset) * 0.1;
+                goal.scale.set(scale, scale, scale);
+            }
+        });
 
         this.controls.update();
         this.renderer.render(this.scene, this.camera);
