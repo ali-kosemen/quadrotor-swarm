@@ -107,7 +107,7 @@ I have trained models for several scenarios
 
 - [Swap Goals (8 Quadrotors)](https://drive.google.com/drive/folders/1fOuFVn7WClnU5ugA6wUitaqX_dtdldGH?usp=sharing) (Not fully stable, but still capable of demonstrating reasonable behavior)
 
-Drag and drop the model folder you downloaded directly into the train_dir. Then, simply provide the paths of experiment_name and train_dir from the config.json file to the inference command
+Drag and drop the model folder (starts with test_) you downloaded directly into the train_dir. Then, simply provide the paths of experiment_name and train_dir from the config.json file to the inference command
 
 ## Citation
 
