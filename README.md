@@ -18,7 +18,8 @@ In the original repository, I encountered persistent issues running the built-in
   Integration of Three.js for 3D visualization interface
 
 - **Added New Scenario**  
-  - The classic figure-eight ∞ curve (3D version) (Bernoulli's lemniscate) | Scenario name: ep_figure8_lemniscate (For evader-pursuit)
+  - The classic figure-eight ∞ curve (3D version) (Bernoulli's lemniscate)
+  - Scenario name: ep_figure8_lemniscate (For evader-pursuit)
 
 ## Setup
 
