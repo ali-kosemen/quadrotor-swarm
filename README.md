@@ -50,14 +50,14 @@ pip install -e .
 
 ## Train
 
-For train single drone:
+For train single drone
 ```bash
 ./train_single.sh
 ```
 
 In ***quadrotor_swarm/swarm_rl/runs/single_quad/baseline.py***, you can change some parameters (quads_mode for scenario choice etc.)
 
-For train multi drone (default 8 drones):
+For train multi drone (default 8 drones)
 ```bash
 ./train_multi.sh
 ```
@@ -65,7 +65,7 @@ For train multi drone (default 8 drones):
 In ***quadrotor_swarm/swarm_rl/runs/multi_quad/baseline.py***, you can change some parameters (quads_mode for scenario choice etc.)
 
 
-To monitor the experiments:
+To monitor the experiments
 
 ```bash
 tensorboard --logdir=./
