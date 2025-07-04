@@ -6,6 +6,13 @@ https://github.com/Zhehui-Huang/quad-swarm-rl
 Paper:
 https://arxiv.org/pdf/2109.07735
 
+-----------------------------------------------------------------
+
+![Bernoulli_lemniscate_gif](gifs/bernoulli_lemniscate.gif)
+
+
+![Dynamic_same_goal_gif](gifs/dynamic_same_goal.gif)
+
 
 ## Why This Version
 
