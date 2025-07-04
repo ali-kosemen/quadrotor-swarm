@@ -10,8 +10,9 @@ https://arxiv.org/pdf/2109.07735
 
 <p align="center">
   <img src="gifs/bernoulli_lemniscate.gif" alt="Bernoulli Lemniscate GIF" width="400" style="display:inline-block; margin-right: 10px;">
-  <img src="gifs/dynamic_same_goal.gif" alt="Dynamic Same Goal GIF" width="400" style="display:inline-block;">
+  <img src="gifs/dynamic_same_goal.gif" alt="Dynamic Same Goal GIF" width="400" height="280" style="display:inline-block; vertical-align: top;">
 </p>
+
 
 
 ## Why This Version
