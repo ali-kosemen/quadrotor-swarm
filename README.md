@@ -8,10 +8,9 @@ https://arxiv.org/pdf/2109.07735
 
 -----------------------------------------------------------------
 
-![Bernoulli_lemniscate_gif](gifs/bernoulli_lemniscate.gif)
+<img src="gifs/bernoulli_lemniscate.gif" alt="Bernoulli Lemniscate GIF" width="400"/>
 
-
-![Dynamic_same_goal_gif](gifs/dynamic_same_goal.gif)
+<img src="gifs/dynamic_same_goal.gif" alt="Dynamic Same Goal GIF" width="400"/>
 
 
 ## Why This Version
