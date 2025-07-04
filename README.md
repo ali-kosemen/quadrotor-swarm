@@ -8,6 +8,9 @@ https://arxiv.org/pdf/2109.07735
 
 -----------------------------------------------------------------
 
+<p align="center">
+  <img src="asset/bernoulli_lemniscate.mkv" alt="Bernoulli Lemniscate GIF" width="400" style="display:inline-block; margin-right: 10px;">
+</p>
 
 
 
